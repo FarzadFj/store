@@ -34,6 +34,9 @@ class AdminController extends Controller
             {
                 $token = $admin->createToken('userToken')->accessToken;
 
+                $_SESSION['phoneNumber'] = $user['phoneNumber'];
+                $_SESSION['password'] = $user['password'];
+
                 return response()->json([
                     'user' => new AdminResource($admin),
                     'token' => $token,
