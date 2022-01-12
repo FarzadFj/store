@@ -28,14 +28,14 @@ class AdminController extends Controller
 
         $admin = Admin::where('phoneNumber', $request->phoneNumber)->first();
 
-        if (! empty($admin))
+        if (!empty($admin))
         {
             if ($request->password == $admin->password)
             {
                 $token = $admin->createToken('userToken')->accessToken;
 
-                $_SESSION['phoneNumber'] = $user['phoneNumber'];
-                $_SESSION['password'] = $user['password'];
+                $_SESSION['phoneNumber'] = $admin['phoneNumber'];
+                $_SESSION['password'] = $admin['password'];
 
                 return response()->json([
                     'user' => new AdminResource($admin),

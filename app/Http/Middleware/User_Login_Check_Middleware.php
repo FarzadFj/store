@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\Admin;
+use App\Models\User;
 
-class Admin_Check_Middleware
+class User_Login_Check_Middleware
 {
     /**
      * Handle an incoming request.
@@ -17,20 +17,14 @@ class Admin_Check_Middleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // $admin = Admin::where('phoneNumber', $request->phoneNumber)->first();
-
-        // if(empty ($admin))
-        // {
-        //     return redirect('/admin/login');
-        // }
 
         if (isset($_SESSION['phoneNumber']) && isset($_SESSION['password']))
         {
-            $someone = Admin::where('phoneNumber', $_SESSION['phoneNumber'])->where('password', $_SESSION['password'])->first();
+            $someone = User::where('phoneNumber', $_SESSION['phoneNumber'])->where('password', $_SESSION['password'])->first();
 
             if(empty ($someone))
             {
-                return redirect('admin/login');
+                return redirect('login');
             }
         }
 

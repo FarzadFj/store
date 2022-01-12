@@ -30,6 +30,9 @@ class UserController extends Controller
         $user = User::create($data);
         $accessToken = $user->createToken('UserToken')->accessToken;
 
+        $_SESSION['phoneNumber'] = $user['phoneNumber'];
+        $_SESSION['password'] = $user['password'];
+
         return response()->json([
             'user' => new UserResource($user),
             'token' => $accessToken,
@@ -59,6 +62,9 @@ class UserController extends Controller
 
         $user = auth()->user();
         $tokenResult = $user->createToken('userToken')->accessToken;
+
+        $_SESSION['phoneNumber'] = $user['phoneNumber'];
+        $_SESSION['password'] = $user['password'];
 
         return response()->json([
             'user' => new UserResource($user),

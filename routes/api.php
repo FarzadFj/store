@@ -26,16 +26,16 @@ Route::post('/register',[UserController::class,'register']);
 
 Route::post('/login',[UserController::class,'login']);
 
-Route::put('/dashboard/{id}',[UserController::class,'update_dashboard']);
+Route::put('/dashboard/{id}',[UserController::class,'update_dashboard'])->middleware('User_Login_Check_Middleware');
 
 // Admin
 Route::post('/admin/login',[AdminController::class,'login']);
 
-Route::get('/admin/users',[AdminController::class,'show_users']);
+Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('Admin_Check_Middleware');
 
-Route::get('/admin/users_pagination',[AdminController::class,'get_users']);
+Route::get('/admin/users_pagination',[AdminController::class,'get_users'])->middleware('Admin_Check_Middleware');
 
-Route::put('/admin/user_profile/{id}',[AdminController::class,'update_user_profile']);
+Route::put('/admin/user_profile/{id}',[AdminController::class,'update_user_profile'])->middleware('Admin_Check_Middleware');
 
 // Product
 Route::get('/admin/home',[ProductController::class,'show_products']);
