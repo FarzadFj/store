@@ -1,26 +1,28 @@
 <?php
 
-function login_check()
-{
-    $result = false;
+session_start();
 
-        // if (isset($_SESSION['phoneNumber']) && isset($_SESSION['password']))
-        // {
-        //     $someone = 
-            // $user_data = [
-            //     'email' => $_SESSION['user_email'],
-            //     'password' => $_SESSION['user_password'],
-            // ];
+// function login_check()
+// {
+//     // $result = false;
 
-            // $result_object = $this->login($user_data);
+//         // if (isset($_SESSION['phoneNumber']) && isset($_SESSION['password']))
+//         // {
+//         //     $someone = 
+//             // $user_data = [
+//             //     'email' => $_SESSION['user_email'],
+//             //     'password' => $_SESSION['user_password'],
+//             // ];
 
-            // if ($result_object->$result['http_code'] == 200)
-            // {
-            //     $result = true;
-            // }
-        // }
+//             // $result_object = $this->login($user_data);
 
-        return $result;
-}
+//             // if ($result_object->$result['http_code'] == 200)
+//             // {
+//             //     $result = true;
+//             // }
+//         // }
+
+//         return $result;
+// }
 
 ?>
