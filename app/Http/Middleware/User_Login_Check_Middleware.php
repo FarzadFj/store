@@ -28,6 +28,11 @@ class User_Login_Check_Middleware
             }
         }
 
+        // if(!Auth::check())
+        // {
+        //     return redirect('login');
+        // }
+
         return $next($request);
     }
 }
