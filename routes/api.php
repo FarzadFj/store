@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,30 +22,44 @@ use App\Http\Controllers\ProductController;
 //     return $request->user();
 // });
 
+
+Route::get('/home',[ProductController::class,'show_products']);
+
 // User
 Route::post('/register',[UserController::class,'register']);
 
 Route::post('/login',[UserController::class,'login']);
 
-Route::put('/dashboard/{id}',[UserController::class,'update_dashboard'])->middleware('user_check');
+// Route::put('/dashboard/{id}',[UserController::class,'update_dashboard'])->middleware('user_check');
+Route::put('/dashboard/{id}',[UserController::class,'update_dashboard'])->middleware('auth:api');
+// Route::put('/dashboard/{id}',[UserController::class,'update_dashboard']);
 
 // Admin
 Route::post('/admin/login',[AdminController::class,'login']);
 
-Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('admin_check');
+// Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('admin_check');
+Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('auth:api','admin_check');
 
 Route::get('/admin/users_pagination',[AdminController::class,'get_users'])->middleware('admin_check');
 
 Route::put('/admin/user_profile/{id}',[AdminController::class,'update_user_profile'])->middleware('admin_check');
 
 // Product
-Route::get('/admin/home',[ProductController::class,'show_products']);
-
 Route::post('/admin/add_product',[ProductController::class,'add_product']);
 
-Route::put('/admin/update_product',[ProductController::class,'update_product']);
+Route::put('/admin/update_product/{id}',[ProductController::class,'update_product']);
 
-Route::delete('/admin/delete_product',[ProductController::class,'delete_product']);
+Route::delete('/admin/delete_product/{id}',[ProductController::class,'delete_product']);
+
+Route::post('/filter_product/$data',[ProductController::class,'filter_product']);
+
+//cart
+Route::get('/cart',[CartController::class,'show_cart'])->middleware('auth:api');
+
+Route::post('/add_to_cart/{id}',[CartController::class,'add_to_cart'])->middleware('auth:api');
+
+Route::delete('/delete_from_cart/{id}',[CartController::class,'delete_from_cart'])->middleware('auth:api');
+
 
 
 
