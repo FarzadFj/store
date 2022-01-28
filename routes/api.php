@@ -30,19 +30,16 @@ Route::post('/register',[UserController::class,'register']);
 
 Route::post('/login',[UserController::class,'login']);
 
-// Route::put('/dashboard/{id}',[UserController::class,'update_dashboard'])->middleware('user_check');
 Route::put('/dashboard/{id}',[UserController::class,'update_dashboard'])->middleware('auth:api');
-// Route::put('/dashboard/{id}',[UserController::class,'update_dashboard']);
 
 // Admin
 Route::post('/admin/login',[AdminController::class,'login']);
 
-// Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('admin_check');
-Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('auth:api','admin_check');
+Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('auth:api');
 
 Route::get('/admin/users_pagination',[AdminController::class,'get_users'])->middleware('admin_check');
 
-Route::put('/admin/user_profile/{id}',[AdminController::class,'update_user_profile'])->middleware('admin_check');
+Route::put('/admin/user_profile/{id}',[UserController::class,'admin_update_user_profile']);
 
 // Product
 Route::post('/admin/add_product',[ProductController::class,'add_product']);
@@ -51,7 +48,7 @@ Route::put('/admin/update_product/{id}',[ProductController::class,'update_produc
 
 Route::delete('/admin/delete_product/{id}',[ProductController::class,'delete_product']);
 
-Route::post('/filter_product/$data',[ProductController::class,'filter_product']);
+Route::post('/filter_product/{data}',[ProductController::class,'filter_product']);
 
 //cart
 Route::get('/cart',[CartController::class,'show_cart'])->middleware('auth:api');
