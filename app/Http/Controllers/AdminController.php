@@ -49,6 +49,22 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'password or phoneNumber is wrong'
         ], 400);
+
+        // if (!auth()->attempt($data)) {
+        //     return response()->json([
+        //         'massege' => 'phoneNumber or password is wrong'
+        //     ], 400);
+        // }
+
+        // $admin = auth()->user();
+        // $token = $admin->createToken('userToken')->accessToken;
+
+        // return response()->json([
+        //     'user' => new AdminResource($admin),
+        //     'token' => $token,
+        //     'token_type' => 'Bearer',
+        //     'message' => 'Admin login successfully'
+        // ]);
     }
 
     public function show_users ()
