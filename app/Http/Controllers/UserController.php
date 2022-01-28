@@ -76,7 +76,6 @@ class UserController extends Controller
 
     public function update_dashboard($id, Request $request)
     {
-        // $user_id = $request->user()->id;
         $data = [];
         $data = $request->all();
         $validator = Validator::make($request->all(), [
@@ -89,16 +88,43 @@ class UserController extends Controller
             return response()->json($validator->errors()->first(), 422);
         }
 
-        empty($request->name) ? : $data['name'] = $request->name;
-        empty($request->lastname) ? : $data['lastname'] = $request->lastname;
-        empty($request->password) ? : $data['password'] = Hash::make($request->password);
+        // empty($request->name) ? : $data['name'] = $request->name;
+        // empty($request->lastname) ? : $data['lastname'] = $request->lastname;
+        // empty($request->password) ? : $data['password'] = Hash::make($request->password);
 
+        $data = update_user_information($data);
         User::where('id',$id)->update($data);
 
         return response()->json([
             'message' => 'User Information Updated Successfully',
-            // 'message 2' => $user_id
+        ]);
+    }
 
+    public function admin_update_user_profile($id, Request $request)
+    {
+        $data = [];
+        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'name' => 'max:55',
+            'lastname' => 'max:60',
+            'phoneNumber' => 'numeric|min:11|unique:users',
+            'password' => 'min:8'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->first(), 422);
+        }
+
+        $data = update_user_information($data);
+        // empty($request->name) ? : $data['name'] = $request->name;
+        // empty($request->lastname) ? : $data['lastname'] = $request->lastname;
+        // empty($request->phoneNumber) ? : $data['phoneNumber'] = $request->phoneNumber;
+        // empty($request->password) ? : $data['password'] = Hash::make($request->password);
+
+        User::where('id',$id)->update($data);
+
+        return response()->json([
+            'message' => 'User Information Updated Successfully'
         ]);
     }
 }
