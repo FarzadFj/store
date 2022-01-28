@@ -25,4 +25,14 @@ session_start();
 //         return $result;
 // }
 
+function update_user_information($data)
+{
+    empty($request->name) ? : $data['name'] = $request->name;
+    empty($request->lastname) ? : $data['lastname'] = $request->lastname;
+    empty($request->phoneNumber) ? : $data['phoneNumber'] = $request->phoneNumber;
+    empty($request->password) ? : $data['password'] = Hash::make($request->password);
+
+    return $data;
+}
+
 ?>
