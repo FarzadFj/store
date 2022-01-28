@@ -107,22 +107,30 @@ class ProductController extends Controller
     {
         $date = 'date';
         $stoke = 'stoke';
-        $category = 'category';
+        // $category = 'category';
 
         if($data == $date)
         {
+            $products = Product::orderBy('created_at','asc')->get();
 
+            return response()->json([
+                'products' => $products
+            ]);
         }
 
         if($data == $stoke)
         {
+            $products = Product::orderBy('stoke','desc')->get();
 
+            return response()->json([
+                'products' => $products
+            ]);
         }
 
-        if($data == $category)
-        {
+        // if($data == $category)
+        // {
 
-        }
+        // }
 
         return response()->json([
             'message' => 'There Is No Such Filter'
