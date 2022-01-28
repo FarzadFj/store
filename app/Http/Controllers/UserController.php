@@ -30,8 +30,8 @@ class UserController extends Controller
         $user = User::create($data);
         $accessToken = $user->createToken('UserToken')->accessToken;
 
-        $_SESSION['phoneNumber'] = $user['phoneNumber'];
-        $_SESSION['password'] = $user['password'];
+        // $_SESSION['phoneNumber'] = $user['phoneNumber'];
+        // $_SESSION['password'] = $user['password'];
 
         return response()->json([
             'user' => new UserResource($user),
@@ -63,8 +63,8 @@ class UserController extends Controller
         $user = auth()->user();
         $tokenResult = $user->createToken('userToken')->accessToken;
 
-        $_SESSION['phoneNumber'] = $user['phoneNumber'];
-        $_SESSION['password'] = $user['password'];
+        // $_SESSION['phoneNumber'] = $user['phoneNumber'];
+        // $_SESSION['password'] = $user['password'];
 
         return response()->json([
             'user' => new UserResource($user),
@@ -76,6 +76,7 @@ class UserController extends Controller
 
     public function update_dashboard($id, Request $request)
     {
+        // $user_id = $request->user()->id;
         $data = [];
         $data = $request->all();
         $validator = Validator::make($request->all(), [
@@ -95,7 +96,9 @@ class UserController extends Controller
         User::where('id',$id)->update($data);
 
         return response()->json([
-            'message' => 'User Information Updated Successfully'
+            'message' => 'User Information Updated Successfully',
+            // 'message 2' => $user_id
+
         ]);
     }
 }
