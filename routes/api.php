@@ -6,6 +6,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CategoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,27 +38,37 @@ Route::put('/dashboard/{id}',[UserController::class,'update_dashboard'])->middle
 // Admin
 Route::post('/admin/login',[AdminController::class,'login']);
 
-Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('auth:api');
+Route::get('/admin/users',[AdminController::class,'show_users'])->middleware('auth:admin');
 
-Route::get('/admin/users_pagination',[AdminController::class,'get_users'])->middleware('admin_check');
+Route::get('/admin/users_pagination',[AdminController::class,'get_users'])->middleware('auth:admin');
 
-Route::put('/admin/user_profile/{id}',[UserController::class,'admin_update_user_profile']);
+Route::put('/admin/user_profile/{id}',[UserController::class,'admin_update_user_profile'])->middleware('auth:admin');
 
 // Product
-Route::post('/admin/add_product',[ProductController::class,'add_product']);
+Route::post('/admin/add_product',[ProductController::class,'add_product'])->middleware('auth:admin');
 
-Route::put('/admin/update_product/{id}',[ProductController::class,'update_product']);
+Route::put('/admin/update_product/{id}',[ProductController::class,'update_product'])->middleware('auth:admin');
 
-Route::delete('/admin/delete_product/{id}',[ProductController::class,'delete_product']);
+Route::delete('/admin/delete_product/{id}',[ProductController::class,'delete_product'])->middleware('auth:admin');
 
-Route::post('/filter_product/{data}',[ProductController::class,'filter_product']);
+Route::post('/add_products_category/{id}',[ProductController::class,'add_products_category'])->middleware('auth:admin');
 
-//cart
+//Cart
 Route::get('/cart',[CartController::class,'show_cart'])->middleware('auth:api');
 
 Route::post('/add_to_cart/{id}',[CartController::class,'add_to_cart'])->middleware('auth:api');
 
 Route::delete('/delete_from_cart/{id}',[CartController::class,'delete_from_cart'])->middleware('auth:api');
+
+// Order
+Route::get('/orders',[OrderController::class,'show_orders'])->middleware('auth:admin');
+
+Route::post('/add_to_order',[OrderController::class,'add_to_order'])->middleware('auth:api');
+
+// Category
+Route::post('/create_category',[CategoryController::class,'create_category'])->middleware('auth:admin');
+
+
 
 
 
