@@ -15,6 +15,31 @@ class AdminController extends Controller
 {
     public function login (Request $request)
     {
+        $admin_data = $request->validate([
+            'phoneNumber' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        $admin = Admin::where('phoneNumber', $admin_data['phoneNumber'])
+            ->where('password', $admin_data['password'])
+            ->first();
+
+        if (empty($admin))
+        {
+            return response()->json([
+                'message' => 'password or phoneNumber is wrong'
+            ], 400);
+        }
+
+        return response()->json([
+            'admin' => $admin,
+            'token' => $admin->createToken('userToken')->plainTextToken,
+            'token_type' => 'Bearer',
+            'message' => 'Admin login successfully'
+        ]);
+
+
+        /*
         $data = [];
         $data = $request->all();
         $validator = Validator::make($request->all(), [
@@ -49,6 +74,7 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'password or phoneNumber is wrong'
         ], 400);
+        */
 
         // if (!auth()->attempt($data)) {
         //     return response()->json([
