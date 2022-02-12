@@ -13,11 +13,6 @@ class CartController extends Controller
 {
     public function show_cart(Request $request)
     {
-        // $user_phonenumber = $_SESSION['phoneNumber'];
-
-        // $user = User::where('phoneNumber', $user_phonenumber)->first();
-        // $user_id = $user['id'];
-
         $user_id = $request->user()->id;
 
         $user_cart =  (new Cart())->get()->where('user_id', $user_id);
@@ -30,7 +25,7 @@ class CartController extends Controller
     public function add_to_cart($id, Request $request)
     {
         $data = [];
-        $new_stoke = [];
+        $new_stock = [];
         $data = $request->all();
         $validator = Validator::make($request->all(), [
             'number' => 'numeric',
@@ -41,9 +36,9 @@ class CartController extends Controller
         }
 
         $product = Product::where('id',$id)->first();
-        $product_stoke = $product['stoke'];
+        $product_stock = $product['stock'];
 
-        if($data['number'] < $product_stoke)
+        if($data['number'] < $product_stock)
         {
             $user_id = $request->user()->id;
             $data['user_id'] = $user_id;
@@ -51,9 +46,9 @@ class CartController extends Controller
             $data['product_id'] = $id;
             $cart = Cart::create($data);
 
-            $new_stoke['stoke'] = $product_stoke - $data['number'];
+            $new_stock['stock'] = $product_stock - $data['number'];
 
-            Product::where('id',$id)->update($new_stoke);
+            Product::where('id',$id)->update($new_stock);
 
             return response()->json([
                 'data' => $cart,
@@ -70,7 +65,7 @@ class CartController extends Controller
 
     public function delete_from_cart($id, Request $request)
     {
-        $new_stoke = [];
+        $new_stock = [];
         $user_id = $request->user()->id;
         $cart = Cart::where('id',$id)->where('user_id',$user_id);
 
@@ -81,11 +76,11 @@ class CartController extends Controller
             $product_id = $cart['product_id'];
 
             $product = Product::where('id',$product_id)->first();
-            $stoke = $product['stoke'];
+            $stock = $product['stock'];
 
-            $new_stoke['stoke'] = $number + $stoke;
+            $new_stock['stock'] = $number + $stock;
 
-            Product::where('id',$product_id)->update($new_stoke);
+            Product::where('id',$product_id)->update($new_stock);
 
             $cart->delete();
 
