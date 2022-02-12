@@ -5,45 +5,59 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Models\Product_Category;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function show_products()
-    {
-        $products = (new Product())->get();
+    // public function show_products()
+    // {
+    //     $products = (new Product())->get();
 
-        return response()->json([
-            'products' => $products
-        ]);
-    }
+    //     return response()->json([
+    //         'products' => $products
+    //     ]);
+    // }
 
     public function add_product(Request $request)
     {
         $data = [];
-        $data = $request->all();
+        $data2 = [];
+        // $data = $request->all();
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:100',
             'description' => 'required|max:1000',
             'price' => 'required|max:10',
             'img_url' => 'required|image|mimes:jpg,png,jpeg|max:2048',
-            'stoke' =>'required|max:10'
+            'stock' =>'required|max:10',
+            'category_id' => 'required|max:2',
+            'sub_category_id' => 'required|max:2'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->first(), 422);
         }
 
+        $data['title'] = $request->title;
+        $data['description'] = $request->description;
+        $data['price'] = $request->price;
         $image = $request->file('img_url');
         $image_extension = $image->guessClientExtension();
         $img_new_name = date("Y/m/d- H-i-s") . "-" . $request->title . "." . $image_extension;
         $image->move(public_path('uploads/products_images'), $img_new_name);
         $data['img_url'] = $img_new_name;
+        $data['stock'] = $request->stock;
 
+        // $product_id = Product::insertGetId($data);
         $product = Product::create($data);
+        $data2['category_id'] = $request->category_id;
+        $data2['sub_category_id'] = $request->sub_category_id;
+        $data2['product_id'] = $product['id'];
+
+        Product_Category::create($data2);
 
         return response()->json([
-            'product' => new ProductResource($product),
+            'product' => $product,
             'massage' => 'Product Added Successfully'
         ]);
     }
@@ -51,13 +65,15 @@ class ProductController extends Controller
     public function update_product($id, Request $request)
     {
         $data = [];
-        $data = $request->all();
+        // $data = $request->all();
         $validator = Validator::make($request->all(), [
             'title' => 'max:100',
             'description' => 'max:1000',
             'price' => 'max:10',
             'img_url' => 'image|mimes:jpg,png,jpeg|max:2048',
-            'stoke' =>'max:10'
+            'stock' =>'max:10',
+            'category_id' => 'max:2',
+            'sub_category_id' => 'max:2'
         ]);
 
         if ($validator->fails()) {
@@ -74,7 +90,12 @@ class ProductController extends Controller
             $image->move(public_path('uploads/products_images'), $img_new_name);
             $data['img_url'] = $img_new_name;
         }
-        empty($request->stoke) ? : $data['stoke'] = $request->stoke;
+
+        empty($request->stock) ? : $data['stock'] = $request->stock;
+        empty($request->category_id) ? : $data['category_id'] = $request->category_id;
+        empty($request->sub_category_id) ? : $data['sub_category_id'] = $request->sub_category_id;
+
+        return $data;
 
         Product::where('id',$id)->update($data);
 
@@ -103,37 +124,53 @@ class ProductController extends Controller
         ],404);
     }
 
-    public function filter_product($data, Request $request)
-    {
-        $date = 'date';
-        $stoke = 'stoke';
-        // $category = 'category';
+    public function show_products( Request $request)
+    {   
+        $request->validate([
+            'from' => 'date',
+            'to' => 'date'
+        ]);
 
-        if($data == $date)
+        $Products = Product::get();
+
+        if($request->has('category'))
         {
-            $products = Product::orderBy('created_at','asc')->get();
+            if($request->has('sub_category'))
+            {
+                $category_id = $request->category;
+                $sub_category_id = $request->sub_category;
 
-            return response()->json([
-                'products' => $products
-            ]);
+                $Products = Product::join('Product_Categories','Products.id','=','Product_Categories.product_id')
+                ->select('Products.*')->where('Product_Categories.category_id','=',$category_id)
+                ->where('Product_Categories.sub_category_id','=',$sub_category_id)->get();
+            }
+
+            $category_id = $request->category;
+
+            $Products = Product::join('Product_Categories','Products.id','=','Product_Categories.product_id')
+            ->select('Products.*')->where('Product_Categories.category_id','=',$category_id)->get();
         }
 
-        if($data == $stoke)
+        if($request->has('from') && $request->has('to'))
         {
-            $products = Product::orderBy('stoke','desc')->get();
-
-            return response()->json([
-                'products' => $products
-            ]);
+            $Products->where('created_at', '>=' , $request->input('from'))->where('created_at', '<=' , $request->input('to'))->get();
         }
 
-        // if($data == $category)
-        // {
+        if($request->has('stock'))
+        {
+                $Products = $Products->where('stock', '>' , '0');
+        }
 
-        // }
+        if(empty($Products))
+        {
+            return response()->json([
+               'message' => 'No Products Found'
+            ], 404);
+        }
 
         return response()->json([
-            'message' => 'There Is No Such Filter'
-        ]);        
+            'products' => $Products
+        ]);
+        
     }
 }
